@@ -31,15 +31,16 @@ sync_branch() {
 	echo "------------------------------------------------------------"
 	echo "Running sync on $REPO: $FROM/$BRANCH => $TO/$BRANCH"
 	cd "$WRKDIR/$REPO"
-	#check repo status here and reset if needed
-	git fetch "$FROM"
+	#todo: check repo status here and reset if needed
+	#fetch from remote with prune option to get rid of deleted branches
+	git fetch -p "$FROM"
 	#check if local branch exists
 	git rev-parse --verify --quiet "$BRANCH"
 	if [[ $? != 0 ]]; then
 		#create local branch matching remote
 		echo "No local branch found. Creating"
 		git branch --track "$BRANCH" "$FROM/$BRANCH"
-  fi
+	fi
 	git checkout "$BRANCH"
 	git pull --ff-only "$FROM" "$BRANCH"
 	if [[ $? != 0 ]]; then
